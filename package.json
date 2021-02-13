@@ -1,0 +1,32 @@
+{
+  "name": "vex-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ynng/vex-tracker.git"
+  },
+  "author": "Ynng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ynng/vex-tracker/issues"
+  },
+  "homepage": "https://github.com/Ynng/vex-tracker#readme",
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-promise": "^4.3.1"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
