@@ -85,7 +85,7 @@ async function start() {
   await fetchInfo();
   interval = setInterval(async function () {
     await fetchInfo();
-  }, 10000);
+  }, 86400000);
   //TODO: change to every 24 hours
 }
 start();
