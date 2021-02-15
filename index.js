@@ -13,9 +13,27 @@ async function start() {
   await fetchInfo();
   interval = setInterval(async function () {
     await fetchInfo();
-  }, 86400000);
+  }, 24*60*60*1000);
 }
-start();
+
+function startAtMidnight() {
+  var now = new Date(Date.now());
+  var night = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1, // the next day, ...
+      0, 0, 0 // ...at 00:00:00 hours
+  );
+  var msTillMidnight = night.getTime() - now.getTime();
+
+  console.log(`Waiting for ${(msTillMidnight/1000).toFixed(1)}s or ${(msTillMidnight/1000/60).toFixed(1)}m until midnight`);
+
+  setTimeout(function () {
+    start();
+  }, msTillMidnight);
+}
+
+startAtMidnight();
 
 rl.on('SIGINT', () => {
   rl.question('Exit Program (y or n)? ', (input) => {
