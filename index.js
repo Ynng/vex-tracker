@@ -1,45 +1,52 @@
 const readline = require('readline');
 const fs = require('fs');
-const fetchInfo = require('./fetch.js');
+const startFetch = require('./fetch.js');
+var express = require('express');
 const { savePath } = require('./config.json');
 
 var rl = readline.createInterface(process.stdin, process.stdout);
+var app = express();
 
-var interval;
-async function start() {
-  fs.mkdir(savePath, { recursive: true }, (err) => {
-    if (err) throw err;
-  });
-  await fetchInfo();
-  interval = setInterval(async function () {
-    await fetchInfo();
-  }, 24*60*60*1000);
-}
+app.get('/', (req, res, next) => {
+  res.json('Hello World');
+});
 
-function startAtMidnight() {
-  var now = new Date(Date.now());
-  var night = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1, // the next day, ...
-      0, 0, 0 // ...at 00:00:00 hours
-  );
-  var msTillMidnight = night.getTime() - now.getTime();
+app.get('/ranking', (req, res, next) => {
+  if (!req.query.date) {
+    res.json({ status: 404 });
+    return;
+  }
+  console.log(req.query.date);
+  if (!fs.existsSync(`${savePath}${req.query.date}.json`)) {
+    res.json({ status: 404 });
+    return;
+  }
 
-  console.log(`Waiting for ${(msTillMidnight/1000).toFixed(1)}s or ${(msTillMidnight/1000/60).toFixed(1)}m until midnight`);
+  try {
+    data = fs.readFileSync(`${savePath}${req.query.date}.json`, 'utf8');
+    databases = JSON.parse(data);
+    res.json(databases);
+    return;
+  } catch (err) {
+    console.log(`Error reading file from disk: ${err}`);
+  }
 
-  setTimeout(function () {
-    start();
-  }, msTillMidnight);
-}
+  res.json({ status: 404 });
+  return;
+});
 
-startAtMidnight();
+// start a server on port 80
+const server = app.listen(80, () => {
+  const port = server.address().port;
+  console.log('app listening on port', port);
+});
+
+startFetch();
 
 rl.on('SIGINT', () => {
   rl.question('Exit Program (y or n)? ', (input) => {
     if (input.match(/^y(es)?$/i)) {
       rl.pause();
-      clearInterval(interval);
       process.exit(0);
     }
   });

@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 if (!globalThis.fetch) globalThis.fetch = fetch;
 
-module.exports = async function fetchInfo() {
+async function fetchInfo() {
   /* Beginning */
   functionStartTime = Date.now() / 1000;
 
@@ -68,4 +68,31 @@ module.exports = async function fetchInfo() {
   console.log(
     `function took ${(functionEndTime - functionStartTime).toFixed(2)}s at ${fetchTime*1000}, wrote to ${today}.json`
   );
+}
+
+async function start() {
+  fs.mkdir(savePath, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
+  await fetchInfo();
+  return setInterval(async function () {
+    await fetchInfo();
+  }, 24*60*60*1000);
+}
+
+module.exports = async function startFetch(){
+  var now = new Date(Date.now());
+  var night = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1, // the next day, ...
+      0, 0, 0 // ...at 00:00:00 hours
+  );
+  var msTillMidnight = night.getTime() - now.getTime();
+
+  console.log(`Waiting for ${(msTillMidnight/1000).toFixed(1)}s or ${(msTillMidnight/1000/60).toFixed(1)}m until midnight`);
+    
+  setTimeout(function () {
+    start();
+  }, msTillMidnight);
 }

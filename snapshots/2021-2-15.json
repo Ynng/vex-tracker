@@ -37,45 +37,8 @@
             },
             "eligible": false
         },
-        "369A": {
-            "rank": 2,
-            "team": {
-                "id": 84500,
-                "program": "VRC",
-                "teamRegId": 235646,
-                "team": "369A",
-                "teamName": "EON",
-                "organization": "FJ",
-                "city": "Irvine",
-                "region": "California",
-                "country": "United States",
-                "gradeLevel": "High School",
-                "link": "<a href=\"https://www.robotevents.com/teams/VRC/369A\" target=\"_blank\">369A</a>",
-                "eventRegion": "California - South",
-                "affiliations": [],
-                "eventRegionId": 2910
-            },
-            "event": {
-                "sku": "RE-VRC-20-3107",
-                "startDate": "2021-01-29",
-                "seasonName": "VRC 2020-2021: Change Up "
-            },
-            "scores": {
-                "score": 252,
-                "programming": 126,
-                "driver": 126,
-                "combinedStopTime": 19,
-                "maxProgramming": 126,
-                "maxDriver": 126,
-                "progStopTime": 4,
-                "driverStopTime": 15,
-                "progScoredAt": 1612255932000,
-                "driverScoredAt": 1612256562000
-            },
-            "eligible": false
-        },
         "44777U": {
-            "rank": 3,
+            "rank": 2,
             "team": {
                 "id": 112822,
                 "program": "VRC",
@@ -112,7 +75,7 @@
             "eligible": false
         },
         "315K": {
-            "rank": 4,
+            "rank": 3,
             "team": {
                 "id": 107230,
                 "program": "VRC",
@@ -149,7 +112,7 @@
             "eligible": false
         },
         "315R": {
-            "rank": 5,
+            "rank": 4,
             "team": {
                 "id": 91596,
                 "program": "VRC",
@@ -186,7 +149,7 @@
             "eligible": false
         },
         "315Y": {
-            "rank": 6,
+            "rank": 5,
             "team": {
                 "id": 71480,
                 "program": "VRC",
@@ -223,7 +186,7 @@
             "eligible": false
         },
         "5225A": {
-            "rank": 7,
+            "rank": 6,
             "team": {
                 "id": 23353,
                 "program": "VRC",
@@ -260,7 +223,7 @@
             "eligible": false
         },
         "686A": {
-            "rank": 8,
+            "rank": 7,
             "team": {
                 "id": 84503,
                 "program": "VRC",
@@ -293,6 +256,43 @@
                 "driverStopTime": 4,
                 "progScoredAt": 1610198575000,
                 "driverScoredAt": 1610198774000
+            },
+            "eligible": false
+        },
+        "369A": {
+            "rank": 8,
+            "team": {
+                "id": 84500,
+                "program": "VRC",
+                "teamRegId": 235646,
+                "team": "369A",
+                "teamName": "EON",
+                "organization": "FJ",
+                "city": "Irvine",
+                "region": "California",
+                "country": "United States",
+                "gradeLevel": "High School",
+                "link": "<a href=\"https://www.robotevents.com/teams/VRC/369A\" target=\"_blank\">369A</a>",
+                "eventRegion": "California - South",
+                "affiliations": [],
+                "eventRegionId": 2910
+            },
+            "event": {
+                "sku": "RE-VRC-20-2967",
+                "startDate": "2021-01-07",
+                "seasonName": "VRC 2020-2021: Change Up "
+            },
+            "scores": {
+                "score": 252,
+                "programming": 126,
+                "driver": 126,
+                "combinedStopTime": 0,
+                "maxProgramming": 126,
+                "maxDriver": 126,
+                "progStopTime": 0,
+                "driverStopTime": 0,
+                "progScoredAt": 1610754066000,
+                "driverScoredAt": 1610754709000
             },
             "eligible": false
         },
@@ -10724,8 +10724,8 @@
                 "eventRegionId": 2488
             },
             "event": {
-                "sku": "RE-VRC-21-3548",
-                "startDate": "2021-01-30",
+                "sku": "RE-VRC-20-3360",
+                "startDate": "2021-01-23",
                 "seasonName": "VRC 2020-2021: Change Up "
             },
             "scores": {
@@ -10737,8 +10737,8 @@
                 "maxDriver": 114,
                 "progStopTime": 0,
                 "driverStopTime": 0,
-                "progScoredAt": 1612053854000,
-                "driverScoredAt": 1612054211000
+                "progScoredAt": 1611445443000,
+                "driverScoredAt": 1611446295000
             },
             "eligible": false
         },
@@ -43979,8 +43979,8 @@
                 "eventRegionId": 2465
             },
             "event": {
-                "sku": "RE-VRC-20-2081",
-                "startDate": "2020-11-07",
+                "sku": "RE-VRC-20-2454",
+                "startDate": "2021-01-30",
                 "seasonName": "VRC 2020-2021: Change Up "
             },
             "scores": {
@@ -43992,8 +43992,8 @@
                 "maxDriver": 62,
                 "progStopTime": 0,
                 "driverStopTime": 0,
-                "progScoredAt": 1604797655000,
-                "driverScoredAt": 1604786560000
+                "progScoredAt": 1612982668000,
+                "driverScoredAt": 1612041215000
             },
             "eligible": false
         },
@@ -44534,20 +44534,20 @@
                 "eventRegionId": 2473
             },
             "event": {
-                "sku": "RE-VRC-20-2529",
-                "startDate": "2021-01-09",
+                "sku": "RE-VRC-20-1797",
+                "startDate": "2021-01-16",
                 "seasonName": "VRC 2020-2021: Change Up "
             },
             "scores": {
                 "score": 60,
                 "programming": 2,
                 "driver": 58,
-                "combinedStopTime": 0,
+                "combinedStopTime": 42,
                 "maxProgramming": 2,
                 "maxDriver": 60,
-                "progStopTime": 0,
+                "progStopTime": 42,
                 "driverStopTime": 0,
-                "progScoredAt": 1610240957000,
+                "progScoredAt": 1610843575000,
                 "driverScoredAt": 1612062850000
             },
             "eligible": false
@@ -61775,13 +61775,13 @@
     },
     "ranking": {
         "1": "81208X",
-        "2": "369A",
-        "3": "44777U",
-        "4": "315K",
-        "5": "315R",
-        "6": "315Y",
-        "7": "5225A",
-        "8": "686A",
+        "2": "44777U",
+        "3": "315K",
+        "4": "315R",
+        "5": "315Y",
+        "6": "5225A",
+        "7": "686A",
+        "8": "369A",
         "9": "90819A",
         "10": "66799A",
         "11": "5327S",
@@ -63438,5 +63438,5 @@
         "1662": "4691E",
         "1663": "9875E"
     },
-    "time": 1613426436850
+    "time": 1613426863678
 }
