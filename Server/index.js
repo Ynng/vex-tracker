@@ -2,37 +2,75 @@ const readline = require('readline');
 const fs = require('fs');
 const startFetch = require('./fetch.js');
 var express = require('express');
-const { savePath } = require('./config.json');
+const { savePath, rankingPath } = require('./config.json');
 
 var rl = readline.createInterface(process.stdin, process.stdout);
 var app = express();
 
-app.get('/', (req, res, next) => {
-  res.json('Hello World');
-});
+app.set('json spaces', 0);
 
 app.get('/ranking', (req, res, next) => {
   if (!req.query.date) {
-    res.json({ status: 404 });
+    res.status(400).json({
+      message: 'Please submit the date query in the format of YYYY-M-D',
+    });
     return;
   }
+
   console.log(req.query.date);
-  if (!fs.existsSync(`${savePath}${req.query.date}.json`)) {
-    res.json({ status: 404 });
-    return;
+
+  if (!fs.existsSync(`${rankingPath}${req.query.date}.json`)) {
+    if (!fs.existsSync(`${savePath}${req.query.date}.json`)) {
+      res
+        .status(404)
+        .json({ message: 'Does not have a snapshot of the given date' });
+      return;
+    }
+    console.log('Generating ranking file for ' + req.query.date);
+
+    try {
+      let snapshot = fs.readFileSync(
+        `${savePath}${req.query.date}.json`,
+        'utf8'
+      );
+      let data = JSON.parse(snapshot);
+      var ranking = Object.assign([], data.ranking);
+      // Get Team id instead of number, probably don't need it.
+      // ranking = ranking.map((item) => data.teams[item].team.id);
+      ranking.shift();
+      var time = data.time;
+    } catch (err) {
+      console.log(`Error reading file from disk: ${err}`);
+      res.status(500).json({ message: 'Error reading files' });
+      return;
+    }
+
+    try {
+      let saveJson = JSON.stringify({ ranking, time }, null, 4);
+      fs.writeFileSync(
+        `${rankingPath}${req.query.date}.json`,
+        saveJson,
+        'utf8'
+      );
+    } catch (err) {
+      console.log(`Error writing file: ${err}`);
+      res.status(500).json({ message: 'Error writing files' });
+      return;
+    }
   }
 
   try {
-    data = fs.readFileSync(`${savePath}${req.query.date}.json`, 'utf8');
-    databases = JSON.parse(data);
-    res.json(databases);
+    let snapshot = fs.readFileSync(
+      `${rankingPath}${req.query.date}.json`,
+      'utf8'
+    );
+    let data = JSON.parse(snapshot);
+    res.json(data);
     return;
   } catch (err) {
     console.log(`Error reading file from disk: ${err}`);
+    res.status(500).json({ message: 'Error reading files' });
   }
-
-  res.json({ status: 404 });
-  return;
 });
 
 // start a server on port 80
@@ -42,6 +80,10 @@ const server = app.listen(80, () => {
 });
 
 startFetch();
+
+fs.mkdir(rankingPath, { recursive: true }, (err) => {
+  if (err) throw err;
+});
 
 rl.on('SIGINT', () => {
   rl.question('Exit Program (y or n)? ', (input) => {
