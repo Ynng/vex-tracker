@@ -117,3 +117,6 @@ dist
 
 # history
 .history/
+
+# cache
+ranking/
