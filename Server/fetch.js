@@ -1,32 +1,56 @@
 const fs = require('fs');
-const { rankingUrl, savePath, debug } = require('./config.json');
+var dateformat = require('dateformat');
+const {
+  rankingUrl,
+  savePath,
+  debug,
+  dataPath,
+  startingDate,
+  currentSeason,
+} = require('./config.json');
 const fetch = require('node-fetch');
 
 if (!globalThis.fetch) globalThis.fetch = fetch;
 
+String.prototype.toDate = function (format) {
+  var normalized = this.replace(/[^a-zA-Z0-9]/g, '-');
+  var normalizedFormat = format.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
+  var formatItems = normalizedFormat.split('-');
+  var dateItems = normalized.split('-');
+
+  var monthIndex = formatItems.indexOf('mm');
+  var dayIndex = formatItems.indexOf('dd');
+  var yearIndex = formatItems.indexOf('yyyy');
+  var hourIndex = formatItems.indexOf('hh');
+  var minutesIndex = formatItems.indexOf('ii');
+  var secondsIndex = formatItems.indexOf('ss');
+
+  var today = new Date();
+
+  var year = yearIndex > -1 ? dateItems[yearIndex] : today.getFullYear();
+  var month =
+    monthIndex > -1 ? dateItems[monthIndex] - 1 : today.getMonth() - 1;
+  var day = dayIndex > -1 ? dateItems[dayIndex] : today.getDate();
+
+  var hour = hourIndex > -1 ? dateItems[hourIndex] : today.getHours();
+  var minute = minutesIndex > -1 ? dateItems[minutesIndex] : today.getMinutes();
+  var second = secondsIndex > -1 ? dateItems[secondsIndex] : today.getSeconds();
+
+  return new Date(year, month, day, hour, minute, second);
+};
+
 async function fetchInfo() {
   /* Beginning */
-  functionStartTime = Date.now() / 1000;
+  functionStartTime = new Date();
 
   /* Fetching */
-  fetchTime = Date.now() / 1000;
-  startTime = fetchTime;
   response = await fetch(rankingUrl);
-  endTime = Date.now() / 1000;
-  if (debug)
-    console.log(
-      `fetched at ${startTime}, took ${(endTime - startTime).toFixed(2)}`
-    );
 
   /* Parsing JSON */
-  startTime = Date.now() / 1000;
   json = await response.json();
-  endTime = Date.now() / 1000;
-  if (debug) console.log(`json parse took ${(endTime - startTime).toFixed(2)}`);
 
   /* Mapping object */
-  startTime = Date.now() / 1000;
-  let mapped = { teams: {}, ranking: {}, time: fetchTime * 1000 };
+  let mapped = { teams: {}, ranking: {}, time: functionStartTime.valueOf() };
   json.forEach((item) => {
     teamNumber = item.team.team;
     mapped['teams'][teamNumber] = item;
@@ -38,35 +62,59 @@ async function fetchInfo() {
     );
     mapped['ranking'][item.rank] = teamNumber;
   });
-  endTime = Date.now() / 1000;
-  if (debug) console.log(`mapping took ${(endTime - startTime).toFixed(2)}`);
 
   /* stringify */
-  startTime = Date.now() / 1000;
-  var saveJson = JSON.stringify(mapped, null, 4);
-  endTime = Date.now() / 1000;
-  if (debug) console.log(`stringify took ${(endTime - startTime).toFixed(2)}`);
+  let saveJson = JSON.stringify(mapped, null, 4);
 
   /* Saving */
-  startTime = Date.now() / 1000;
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth() + 1; //January is 0!
-  var yyyy = today.getFullYear();
-  today = yyyy + '-' + mm + '-' + dd;
+  var today = dateformat(functionStartTime, 'yyyy-mm-dd');
   try {
     fs.writeFileSync(`${savePath}${today}.json`, saveJson, 'utf8');
-    endTime = Date.now() / 1000;
-    if (debug)
-      console.log(`writing file took ${(endTime - startTime).toFixed(2)}`);
   } catch {
     console.error(err);
   }
 
+  /* Generate all data file */
+  var targetDate = startingDate.toDate('yyyy-mm-dd');
+  var all = { teams: {}, time: [] };
+  var i = 0;
+  while (targetDate <= functionStartTime) {
+    var targetDateString = dateformat(targetDate, 'yyyy-mm-dd');
+    if (fs.existsSync(`${savePath}${targetDateString}.json`)) {
+      //Read
+      try {
+        let snapshot = fs.readFileSync(
+          `${savePath}${targetDateString}.json`,
+          'utf8'
+        );
+        let data = JSON.parse(snapshot);
+        all.time[i] = data.time;
+
+        for(const team in data.teams){
+          if (!all.teams[team]) all.teams[team] = [];
+          all.teams[team][i] = data.teams[team].rank;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    i++;
+    targetDate.setDate(targetDate.getDate() + 1);
+  }
+  //Write
+  try {
+    let saveJson = JSON.stringify(all, null, 4);
+    fs.writeFileSync(`${dataPath}${currentSeason}.json`, saveJson, 'utf8');
+  } catch (err) {
+    console.error(err);
+  }
+
   /* Ending */
-  functionEndTime = Date.now() / 1000;
+  functionEndTime = new Date();
   console.log(
-    `function took ${(functionEndTime - functionStartTime).toFixed(2)}s at ${fetchTime*1000}, wrote to ${today}.json`
+    `function took ${((functionEndTime - functionStartTime) / 1000).toFixed(
+      2
+    )}s, wrote to ${today}.json`
   );
 }
 
@@ -74,25 +122,37 @@ async function start() {
   fs.mkdir(savePath, { recursive: true }, (err) => {
     if (err) throw err;
   });
+  fs.mkdir(dataPath, { recursive: true }, (err) => {
+    if (err) throw err;
+  });
   await fetchInfo();
   return setInterval(async function () {
     await fetchInfo();
-  }, 24*60*60*1000);
+  }, 24 * 60 * 60 * 1000);
 }
 
-module.exports = async function startFetch(){
+module.exports = async function startFetch() {
   var now = new Date(Date.now());
   var night = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1, // the next day, ...
-      0, 0, 0 // ...at 00:00:00 hours
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1, // the next day, ...
+    0,
+    0,
+    0 // ...at 00:00:00 hours
   );
   var msTillMidnight = night.getTime() - now.getTime();
+  if (debug) msTillMidnight = 0;
 
-  console.log(`Waiting for ${(msTillMidnight/1000).toFixed(1)}s or ${(msTillMidnight/1000/60).toFixed(1)}m until midnight`);
-    
+  console.log(
+    `Waiting for ${(msTillMidnight / 1000).toFixed(1)}s or ${(
+      msTillMidnight /
+      1000 /
+      60
+    ).toFixed(1)}m until midnight`
+  );
+
   setTimeout(function () {
     start();
   }, msTillMidnight);
-}
+};

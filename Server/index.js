@@ -2,17 +2,17 @@ const readline = require('readline');
 const fs = require('fs');
 const startFetch = require('./fetch.js');
 var express = require('express');
-const { savePath, rankingPath } = require('./config.json');
+const { savePath, rankingPath, dataPath } = require('./config.json');
 
 var rl = readline.createInterface(process.stdin, process.stdout);
 var app = express();
 
 app.set('json spaces', 0);
 
-app.get('/ranking', (req, res, next) => {
+app.get('/ranking', (req, res) => {
   if (!req.query.date) {
     res.status(400).json({
-      message: 'Please submit the date query in the format of YYYY-M-D',
+      message: 'Please submit the date query in the format of yyyy-mm-dd',
     });
     return;
   }
@@ -60,17 +60,48 @@ app.get('/ranking', (req, res, next) => {
   }
 
   try {
-    let snapshot = fs.readFileSync(
+    let ranking = fs.readFileSync(
       `${rankingPath}${req.query.date}.json`,
       'utf8'
     );
-    let data = JSON.parse(snapshot);
+    let data = JSON.parse(ranking);
     res.json(data);
     return;
   } catch (err) {
     console.log(`Error reading file from disk: ${err}`);
     res.status(500).json({ message: 'Error reading files' });
   }
+});
+
+app.get('/all', (req, res) => {
+  if (!req.query.season) {
+    res.status(400).json({
+      message: 'Please submit the season',
+    });
+    return;
+  }
+
+  if (!fs.existsSync(`${dataPath}${req.query.season}.json`)) {
+    res.status(404).json({ message: 'File does not exist' });
+    return;
+  }
+
+  try{
+    let all = fs.readFileSync(
+      `${dataPath}${req.query.season}.json`,
+      'utf8'
+    );
+    let data = JSON.parse(all);
+    res.json(data);
+    return;
+  }catch (err) {
+    console.log(`Error reading file from disk: ${err}`);
+    res.status(500).json({ message: 'Error reading files' });
+  }
+
+
+
+
 });
 
 // start a server on port 80
