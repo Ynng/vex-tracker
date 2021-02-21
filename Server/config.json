@@ -5,5 +5,5 @@
   "dataPath":"./all/",
   "startingDate":"2021-02-13",
   "currentSeason":"change-up",
-  "debug":true
+  "debug":false
 }
