@@ -1,15 +1,26 @@
 const readline = require('readline');
 const fs = require('fs');
 const startFetch = require('./fetch.js');
-var express = require('express');
-var cors = require('cors');
+const express = require('express');
+const cors = require('cors');
+const https = require('https');
+
 const { savePath, rankingPath, dataPath } = require('./config.json');
 
 var rl = readline.createInterface(process.stdin, process.stdout);
 var app = express();
 
 app.use(cors());
+app.use(express.static('static'));
+app.use(require('helmet')());
 app.set('json spaces', 0);
+
+const options = {
+  cert: fs.readFileSync('./sslcert/fullchain.pem'),
+  key: fs.readFileSync('./sslcert/privkey.pem')
+};
+
+app.get('/health-check', (req, res) => res.sendStatus(200));
 
 app.get('/ranking', (req, res) => {
   if (!req.query.date) {
@@ -104,6 +115,7 @@ const server = app.listen(80, () => {
   const port = server.address().port;
   console.log('app listening on port', port);
 });
+https.createServer(options, app).listen(8443);
 
 startFetch();
 
