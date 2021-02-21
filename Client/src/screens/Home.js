@@ -36,7 +36,7 @@ function Home() {
   };
 
   useEffect(() => {
-    fetch("http://140.238.159.27/all?season=change-up", {
+    fetch("https://some-server.ynng.ca/all?season=change-up", {
       // mode: "no-cors",
     })
       .then((response) => {
