@@ -76,7 +76,7 @@ async function fetchInfo() {
 
   /* Generate all data file */
   var targetDate = startingDate.toDate('yyyy-mm-dd');
-  var all = [];
+  var all = { teams: {}, time: [] };
   var i = 0;
   while (targetDate <= functionStartTime) {
     var targetDateString = dateformat(targetDate, 'yyyy-mm-dd');
@@ -88,16 +88,17 @@ async function fetchInfo() {
           'utf8'
         );
         let data = JSON.parse(snapshot);
-        all[i] = {time: data.time};
+        all.time[i] = data.time;
 
         for(const team in data.teams){
-          all[i][team] = data.teams[team].rank;
+          if (!all.teams[team]) all.teams[team] = [];
+          all.teams[team][i] = data.teams[team].rank;
         }
       } catch (err) {
         console.error(err);
       }
-      i++;
     }
+    i++;
     targetDate.setDate(targetDate.getDate() + 1);
   }
   //Write
