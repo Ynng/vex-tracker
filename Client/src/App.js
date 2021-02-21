@@ -1,29 +1,16 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { useRef, useState, useEffect, Component} from "react";
-// import canvas from "./controllers/canvas";
+import { useRef, useState, useEffect, Component } from "react";
 import Canvas from "react-responsive-canvas";
+import { Route, Switch } from "react-router-dom";
+import Home from "./screens/Home";
 
-class App extends Component {
-  componentDidMount() {
-    this.ctx = this.canvas.getContext('2d');
-    this.draw();
-  }
-
-  draw() {
-    // Draw whatever
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-
-  render () {
-    return (
-      <div>
-        <Canvas
-          canvasRef={el => (this.canvas = el)}
-          onResize={this.draw} />
-      </div>
-    );
-  }
+function App() {
+  return (
+    <Switch>
+      <Route path="/" component={Home} />
+    </Switch>
+  );
 }
 
 export default App;
