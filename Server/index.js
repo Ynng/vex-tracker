@@ -11,7 +11,7 @@ var rl = readline.createInterface(process.stdin, process.stdout);
 var app = express();
 
 app.use(cors());
-app.use(express.static('static'));
+app.use(express.static('static', {dotfiles: 'allow'}));
 app.use(require('helmet')());
 app.set('json spaces', 0);
 
@@ -115,7 +115,7 @@ const server = app.listen(80, () => {
   const port = server.address().port;
   console.log('app listening on port', port);
 });
-https.createServer(options, app).listen(8443);
+https.createServer(options, app).listen(443);
 
 startFetch();
 
