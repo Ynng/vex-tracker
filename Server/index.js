@@ -2,11 +2,13 @@ const readline = require('readline');
 const fs = require('fs');
 const startFetch = require('./fetch.js');
 var express = require('express');
+var cors = require('cors');
 const { savePath, rankingPath, dataPath } = require('./config.json');
 
 var rl = readline.createInterface(process.stdin, process.stdout);
 var app = express();
 
+app.use(cors());
 app.set('json spaces', 0);
 
 app.get('/ranking', (req, res) => {
@@ -86,22 +88,15 @@ app.get('/all', (req, res) => {
     return;
   }
 
-  try{
-    let all = fs.readFileSync(
-      `${dataPath}${req.query.season}.json`,
-      'utf8'
-    );
+  try {
+    let all = fs.readFileSync(`${dataPath}${req.query.season}.json`, 'utf8');
     let data = JSON.parse(all);
     res.json(data);
     return;
-  }catch (err) {
+  } catch (err) {
     console.log(`Error reading file from disk: ${err}`);
     res.status(500).json({ message: 'Error reading files' });
   }
-
-
-
-
 });
 
 // start a server on port 80
