@@ -2,10 +2,28 @@ import "./Home.css";
 import { LineChart, Line, YAxis, XAxis } from "recharts";
 import { useEffect, useState } from "react";
 
+const teamHeight = 30;
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 let randomColor = () => {
-  var letters = "0123456789ABCDEF";
+  var letters = "123456789ABCDEF";
   var color = "#";
-  for (var i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
+  for (var i = 0; i < 6; i++)
+    color += letters[Math.floor(Math.random() * letters.length)];
   return color;
 };
 
@@ -13,10 +31,12 @@ function Home() {
   const [data, setData] = useState([]);
   const [maxmin, setmaxmin] = useState({});
   const [colors, setColors] = useState({});
+  const [hovering, setHovering] = useState("");
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [scrollTop, setScrollTop] = useState(0);
+  const [ticks, setTicks] = useState([]);
 
   let processData = (data) => {
     let days = data.time.length;
@@ -26,9 +46,12 @@ function Home() {
     let newTeams = [];
     let maxmin = {};
     let colors = {};
+    let ticks = [];
     for (let i = 0; i < days; i++) {
       newData[i] = {};
       newData[i]["time"] = data.time[i];
+      let date = new Date(data.time[i]);
+      newData[i]["date"] = `${monthNames[date.getMonth()]} ${date.getDate()}`;
       teams.forEach((team, idx) => {
         let rank = data.teams[team][i];
         if (!rank) rank = teams.length + 1;
@@ -38,8 +61,10 @@ function Home() {
         newData[i][team] = rank;
         if (i === days - 1) newTeams[rank] = team;
         if (i === days - 1) colors[team] = randomColor();
+        if (i === days - 1) ticks[rank] = rank;
       });
     }
+    setTicks(ticks);
     setmaxmin(maxmin);
     setTeams(newTeams);
     setData(newData);
@@ -85,34 +110,70 @@ function Home() {
   if (error) return "Error!";
 
   return (
-    <>
+    <div className="main-wrapper">
       <LineChart
         width={data.length * 50}
-        height={teams.length * 20}
+        height={teams.length * teamHeight - 10}
         data={data}
         margin={{
-          top: 5,
-          right: 30,
+          top: 20,
+          right: 0,
           left: 20,
-          bottom: 5,
+          bottom: 0,
         }}
       >
-        {teams.map((item, idx) => {
+        {teams.map((item) => {
           if (
             maxmin[item].min >
-            (scrollTop + window.innerHeight + window.innerHeight) / 20
+            (scrollTop + window.innerHeight + window.innerHeight / 2) /
+              teamHeight
           )
             return null;
-          if (maxmin[item].max < (scrollTop - window.innerHeight) / 20)
+          if (
+            maxmin[item].max <
+            (scrollTop - window.innerHeight / 2) / teamHeight
+          )
             return null;
+
           return (
             <Line
               isAnimationActive={false}
               type="monotone"
               dataKey={item}
               stroke={colors[item]}
+              dot={{ fill: colors[item] }}
               strokeWidth={2}
               key={item}
+              className={item}
+            />
+          );
+        })}
+        {teams.map((item) => {
+          if (
+            maxmin[item].min >
+            (scrollTop + window.innerHeight + window.innerHeight / 4) /
+              teamHeight
+          )
+            return null;
+          if (
+            maxmin[item].max <
+            (scrollTop - window.innerHeight / 4) / teamHeight
+          )
+            return null;
+
+          return (
+            <Line
+              isAnimationActive={false}
+              type="monotone"
+              dataKey={item}
+              stroke={colors[item]}
+              dot={false}
+              strokeWidth={teamHeight}
+              key={item + "_hover"}
+              className={[item, "for-hover"]}
+              onMouseOver={() => {
+                setHovering(item);
+              }}
             />
           );
         })}
@@ -120,13 +181,28 @@ function Home() {
           type={"number"}
           orientation={"right"}
           reversed
-          interval={1}
-          domain={[0, teams.length]}
+          tickCount={1}
+          // tickCount={teams.length}
+          // ticks={{1:"81208X", 2:"369A"}}
+          domain={[1, teams.length - 1]}
         />
-        <XAxis dataKey="time" />
+        <XAxis dataKey="date" />
         {/* <Tooltip /> */}
       </LineChart>
-    </>
+      <div className = "ticks">
+        {teams.map((item, idx) => (
+          <p>{idx}: {item}</p>
+        ))}
+      </div>
+      <div className="info-panel">
+        <a
+          href={`https://www.robotevents.com/teams/VRC/${hovering}`}
+          className="team"
+        >
+          <h1>{hovering}</h1>
+        </a>
+      </div>
+    </div>
   );
 }
 export default Home;

@@ -1,0 +1,39 @@
+.main-wrapper {
+  width: 100%;
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+}
+
+.info-panel {
+  position: fixed;
+  right: 1em;
+  width: 25vw;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.recharts-line.for-hover:hover {
+  z-index: 10;
+}
+
+.recharts-line.for-hover:hover path {
+  transition: 0.2s;
+  pointer-events: all;
+}
+
+.recharts-line.for-hover:not(:hover) path {
+  padding: 1em;
+  transition: 2s;
+  stroke: #ffffff00;
+}
+
+.ticks {
+  line-height: 30px;
+  padding-top: 5px;
+  margin-left: -50px;
+}
+
+.ticks p {
+  margin: 0;
+}
