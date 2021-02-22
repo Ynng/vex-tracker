@@ -1,6 +1,8 @@
 import "./Home.css";
 import { LineChart, Line, YAxis, XAxis } from "recharts";
 import { useEffect, useState } from "react";
+import { randomColor, getTimeString } from "../util/Util";
+import dateformat from "dateformat";
 
 const teamHeight = 30;
 
@@ -18,14 +20,6 @@ const monthNames = [
   "Nov",
   "Dec",
 ];
-
-let randomColor = () => {
-  var letters = "123456789ABCDEF";
-  var color = "#";
-  for (var i = 0; i < 6; i++)
-    color += letters[Math.floor(Math.random() * letters.length)];
-  return color;
-};
 
 function Home() {
   const [data, setData] = useState([]);
@@ -170,7 +164,11 @@ function Home() {
               dot={false}
               strokeWidth={teamHeight}
               key={item + "_hover"}
-              className={[item, "for-hover"]}
+              className={[
+                item,
+                "for-hover",
+                item === hovering ? "hovered" : "",
+              ]}
               onMouseOver={() => {
                 setHovering(item);
               }}
@@ -189,12 +187,25 @@ function Home() {
         <XAxis dataKey="date" />
         {/* <Tooltip /> */}
       </LineChart>
-      <div className = "ticks">
+      <div className="ticks">
         {teams.map((item, idx) => (
-          <p>{idx}: {item}</p>
+          <p
+            onMouseOver={() => {
+              setHovering(item);
+            }}
+            onClick={() => {
+              setHovering(item);
+            }}
+          >
+            {idx}: {item}
+          </p>
         ))}
       </div>
       <div className="info-panel">
+        <p>
+          Graph last updates{" "}
+          {getTimeString(Date.now() - data[data.length - 1].time)}
+        </p>
         <a
           href={`https://www.robotevents.com/teams/VRC/${hovering}`}
           className="team"

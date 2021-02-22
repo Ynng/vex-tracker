@@ -10,19 +10,21 @@
   right: 1em;
   width: 25vw;
   top: 50%;
+  right: 10%;
   transform: translateY(-50%);
+  text-align: center;
 }
 
-.recharts-line.for-hover:hover {
+.recharts-line.for-hover:hover, .recharts-line.for-hover.hovered {
   z-index: 10;
 }
 
-.recharts-line.for-hover:hover path {
+.recharts-line.for-hover:hover path, .recharts-line.for-hover.hovered path {
   transition: 0.2s;
   pointer-events: all;
 }
 
-.recharts-line.for-hover:not(:hover) path {
+.recharts-line.for-hover:not(:hover):not(.hovered) path {
   padding: 1em;
   transition: 2s;
   stroke: #ffffff00;
@@ -36,4 +38,10 @@
 
 .ticks p {
   margin: 0;
+  transition: .3s;
+}
+
+.ticks p:hover{
+  cursor: pointer;
+  font-size: 25px;
 }
