@@ -32,9 +32,12 @@ String.prototype.toDate = function (format) {
     monthIndex > -1 ? dateItems[monthIndex] - 1 : today.getMonth() - 1;
   var day = dayIndex > -1 ? dateItems[dayIndex] : today.getDate();
 
-  var hour = hourIndex > -1 ? dateItems[hourIndex] : today.getHours();
-  var minute = minutesIndex > -1 ? dateItems[minutesIndex] : today.getMinutes();
-  var second = secondsIndex > -1 ? dateItems[secondsIndex] : today.getSeconds();
+  // var hour = hourIndex > -1 ? dateItems[hourIndex] : today.getHout();
+  var hour = hourIndex > -1 ? dateItems[hourIndex] : 0;
+  // var minute = minutesIndex > -1 ? dateItems[minutesIndex] : today.getMinutes();
+  var minute = minutesIndex > -1 ? dateItems[minutesIndex] : 0;
+  // var second = secondsIndex > -1 ? dateItems[secondsIndex] : today.getSeconds();
+  var second = secondsIndex > -1 ? dateItems[secondsIndex] : 0;
 
   return new Date(year, month, day, hour, minute, second);
 };
