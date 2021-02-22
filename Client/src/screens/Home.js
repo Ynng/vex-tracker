@@ -107,7 +107,7 @@ function Home() {
     <div className="main-wrapper">
       <LineChart
         width={data.length * 50}
-        height={teams.length * teamHeight - 10}
+        height={(teams.length+0.7) * teamHeight}
         data={data}
         margin={{
           top: 20,
