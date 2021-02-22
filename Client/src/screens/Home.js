@@ -2,41 +2,78 @@ import "./Home.css";
 import { LineChart, Line, YAxis, XAxis } from "recharts";
 import { useEffect, useState } from "react";
 
+const teamHeight = 30;
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 let randomColor = () => {
-  var letters = "0123456789ABCDEF";
+  var letters = "123456789ABCDEF";
   var color = "#";
-  for (var i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
+  for (var i = 0; i < 6; i++)
+    color += letters[Math.floor(Math.random() * letters.length)];
   return color;
 };
 
 function Home() {
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
+  const [maxmin, setmaxmin] = useState({});
+  const [colors, setColors] = useState({});
+  const [hovering, setHovering] = useState("");
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [ticks, setTicks] = useState([]);
 
   let processData = (data) => {
-    let len = data.time.length;
+    let days = data.time.length;
     let newData = [];
-    let newTeams = Object.keys(data.teams);
-    setTeams(newTeams);
-    for (let i = 0; i < len; i++) {
+    let teams = Object.keys(data.teams);
+    let len = teams.length;
+    let newTeams = [];
+    let maxmin = {};
+    let colors = {};
+    let ticks = [];
+    for (let i = 0; i < days; i++) {
       newData[i] = {};
       newData[i]["time"] = data.time[i];
-      newTeams.forEach((key) => {
-        if(!data.teams[key][i]){
-          console.log(`${key} null`);
-          data.teams[key][i] = newTeams.length + 1;
-        }
-        newData[i][key] = data.teams[key][i];
+      let date = new Date(data.time[i]);
+      newData[i]["date"] = `${monthNames[date.getMonth()]} ${date.getDate()}`;
+      teams.forEach((team, idx) => {
+        let rank = data.teams[team][i];
+        if (!rank) rank = teams.length + 1;
+        if (!maxmin[team]) maxmin[team] = { max: 0, min: len };
+        maxmin[team].max = Math.max(maxmin[team].max, rank);
+        maxmin[team].min = Math.min(maxmin[team].min, rank);
+        newData[i][team] = rank;
+        if (i === days - 1) newTeams[rank] = team;
+        if (i === days - 1) colors[team] = randomColor();
+        if (i === days - 1) ticks[rank] = rank;
       });
     }
+    setTicks(ticks);
+    setmaxmin(maxmin);
+    setTeams(newTeams);
     setData(newData);
+    setColors(colors);
     console.log(newData);
   };
 
   useEffect(() => {
-    fetch("http://140.238.159.27/all?season=change-up", {
+    fetch("https://some-server.ynng.ca/all?season=change-up", {
       // mode: "no-cors",
     })
       .then((response) => {
@@ -53,39 +90,119 @@ function Home() {
       .finally(() => {
         setLoading(false);
       });
+
+    let myScrollTop = 0;
+    //Scrolling
+    function onScroll() {
+      let currentPosition = window.pageYOffset;
+      if (Math.abs(currentPosition - myScrollTop) > 100) {
+        myScrollTop = currentPosition <= 0 ? 0 : currentPosition;
+        setScrollTop(myScrollTop);
+      }
+    }
+
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   if (loading) return "Loading....";
   if (error) return "Error!";
 
   return (
-    <LineChart
-      width={data.length * 50}
-      height={teams.length * 20}
-      data={data}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5
-      }}
-    >
-      {teams.map((item) => {
-        return (
-          <Line
-            isAnimationActive={false}
-            type="monotone"
-            dataKey={item}
-            stroke={randomColor()}
-            strokeWidth={2}
-            key={item}
-          />
-        );
-      })}
-      <YAxis type={"number"} orientation={"right"} reversed />
-      <XAxis dataKey="time" />
-      {/* <Tooltip /> */}
-    </LineChart>
+    <div className="main-wrapper">
+      <LineChart
+        width={data.length * 50}
+        height={teams.length * teamHeight - 10}
+        data={data}
+        margin={{
+          top: 20,
+          right: 0,
+          left: 20,
+          bottom: 0,
+        }}
+      >
+        {teams.map((item) => {
+          if (
+            maxmin[item].min >
+            (scrollTop + window.innerHeight + window.innerHeight / 2) /
+              teamHeight
+          )
+            return null;
+          if (
+            maxmin[item].max <
+            (scrollTop - window.innerHeight / 2) / teamHeight
+          )
+            return null;
+
+          return (
+            <Line
+              isAnimationActive={false}
+              type="monotone"
+              dataKey={item}
+              stroke={colors[item]}
+              dot={{ fill: colors[item] }}
+              strokeWidth={2}
+              key={item}
+              className={item}
+            />
+          );
+        })}
+        {teams.map((item) => {
+          if (
+            maxmin[item].min >
+            (scrollTop + window.innerHeight + window.innerHeight / 4) /
+              teamHeight
+          )
+            return null;
+          if (
+            maxmin[item].max <
+            (scrollTop - window.innerHeight / 4) / teamHeight
+          )
+            return null;
+
+          return (
+            <Line
+              isAnimationActive={false}
+              type="monotone"
+              dataKey={item}
+              stroke={colors[item]}
+              dot={false}
+              strokeWidth={teamHeight}
+              key={item + "_hover"}
+              className={[item, "for-hover"]}
+              onMouseOver={() => {
+                setHovering(item);
+              }}
+            />
+          );
+        })}
+        <YAxis
+          type={"number"}
+          orientation={"right"}
+          reversed
+          tickCount={1}
+          // tickCount={teams.length}
+          // ticks={{1:"81208X", 2:"369A"}}
+          domain={[1, teams.length - 1]}
+        />
+        <XAxis dataKey="date" />
+        {/* <Tooltip /> */}
+      </LineChart>
+      <div className = "ticks">
+        {teams.map((item, idx) => (
+          <p>{idx}: {item}</p>
+        ))}
+      </div>
+      <div className="info-panel">
+        <a
+          href={`https://www.robotevents.com/teams/VRC/${hovering}`}
+          className="team"
+        >
+          <h1>{hovering}</h1>
+        </a>
+      </div>
+    </div>
   );
 }
 export default Home;
