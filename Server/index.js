@@ -4,7 +4,7 @@ const startFetch = require('./fetch.js');
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
-const { toDate } = require('util');
+const { toDate } = require('./util');
 
 const {
   savePath,

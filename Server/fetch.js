@@ -9,7 +9,7 @@ const {
   currentSeason,
 } = require('./config.json');
 const fetch = require('node-fetch');
-const { toDate } = require('util');
+const { toDate } = require('./util');
 
 if (!globalThis.fetch) globalThis.fetch = fetch;
 
