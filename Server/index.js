@@ -4,20 +4,26 @@ const startFetch = require('./fetch.js');
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
+const { toDate } = require('util');
 
-const { savePath, rankingPath, dataPath } = require('./config.json');
+const {
+  savePath,
+  rankingPath,
+  dataPath,
+  startingDate,
+} = require('./config.json');
 
 var rl = readline.createInterface(process.stdin, process.stdout);
 var app = express();
 
 app.use(cors());
-app.use(express.static('static', {dotfiles: 'allow'}));
+app.use(express.static('static', { dotfiles: 'allow' }));
 app.use(require('helmet')());
 app.set('json spaces', 0);
 
 const options = {
   cert: fs.readFileSync('./sslcert/fullchain.pem'),
-  key: fs.readFileSync('./sslcert/privkey.pem')
+  key: fs.readFileSync('./sslcert/privkey.pem'),
 };
 
 app.get('/health-check', (req, res) => res.sendStatus(200));
@@ -84,6 +90,31 @@ app.get('/ranking', (req, res) => {
     console.log(`Error reading file from disk: ${err}`);
     res.status(500).json({ message: 'Error reading files' });
   }
+});
+
+app.get('/team-info', (req, res) => {
+  var targetDate = new Date();
+  var startDate = toDate(startingDate, 'yyyy-mm-dd');
+  while (targetDate >= startDate) {
+    var targetDateString = dateformat(targetDate, 'yyyy-mm-dd');
+    if (fs.existsSync(`${savePath}${targetDateString}.json`)) {
+      try {
+        let snapshot = fs.readFileSync(
+          `${savePath}${targetDateString}.json`,
+          'utf8'
+        );
+        let data = JSON.parse(snapshot);
+        res.json(data);
+        return;
+      } catch (err) {
+        console.log(`Error reading file from disk: ${err}`);
+        res.status(500).json({ message: 'Error reading files' });
+      }
+      return;
+    }
+    targetDate -= 24 * 60 * 60 * 1000;
+  }
+  res.status(500).json({ message: "Error, can't find files" });
 });
 
 app.get('/all', (req, res) => {
