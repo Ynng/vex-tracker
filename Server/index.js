@@ -132,7 +132,7 @@ app.get('/team-info', (req, res) => {
 });
 
 app.get('/all', (req, res) => {
-  console.log(req.connection.remoteAddress);
+  console.log(`All: ${req.connection.remoteAddress}`);
   if (!req.query.season) {
     res.status(400).json({
       message: 'Please submit the season',
