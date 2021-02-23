@@ -1,7 +1,7 @@
 import "./Home.css";
 import { LineChart, Line, YAxis, XAxis } from "recharts";
 import { useEffect, useState } from "react";
-import { randomColor, getTimeString } from "../util/Util";
+import { randomDarkColor, getTimeString } from "../util/Util";
 import dateformat from "dateformat";
 
 const teamHeight = 30;
@@ -25,7 +25,7 @@ function Home() {
   const [data, setData] = useState([]);
   const [maxmin, setmaxmin] = useState({});
   const [colors, setColors] = useState({});
-  const [hovering, setHovering] = useState("");
+  const [chosenTeam, setChosenTeam] = useState("");
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,7 +54,7 @@ function Home() {
         maxmin[team].min = Math.min(maxmin[team].min, rank);
         newData[i][team] = rank;
         if (i === days - 1) newTeams[rank] = team;
-        if (i === days - 1) colors[team] = randomColor();
+        if (i === days - 1) colors[team] = randomDarkColor();
         if (i === days - 1) ticks[rank] = rank;
       });
     }
@@ -100,6 +100,12 @@ function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  let chooseTeam = (team) => {
+    
+    
+    setChosenTeam(team);
+  };
+
   if (loading) return "Loading....";
   if (error) return "Error!";
 
@@ -117,18 +123,15 @@ function Home() {
           left: 20,
           bottom: 0,
         }}
+        className="team-rankings"
       >
         {teams.map((item) => {
           if (
             maxmin[item].min >
-            (scrollTop + window.innerHeight + window.innerHeight / 2) /
-              teamHeight
+            (scrollTop + window.innerHeight + window.innerHeight) / teamHeight
           )
             return null;
-          if (
-            maxmin[item].max <
-            (scrollTop - window.innerHeight / 2) / teamHeight
-          )
+          if (maxmin[item].max < (scrollTop - window.innerHeight) / teamHeight)
             return null;
 
           return (
@@ -140,67 +143,41 @@ function Home() {
               dot={{ fill: colors[item] }}
               strokeWidth={2}
               key={item}
-              className={item}
+              className={[item === chosenTeam ? "selected" : ""]}
             />
           );
         })}
-        {teams.map((item) => {
-          if (
-            maxmin[item].min >
-            (scrollTop + window.innerHeight + window.innerHeight / 4) /
-              teamHeight
-          )
-            return null;
-          if (
-            maxmin[item].max <
-            (scrollTop - window.innerHeight / 4) / teamHeight
-          )
-            return null;
-
-          return (
-            <Line
-              isAnimationActive={false}
-              type="monotone"
-              dataKey={item}
-              stroke={colors[item]}
-              dot={false}
-              strokeWidth={teamHeight}
-              key={item + "_hover"}
-              className={[
-                item,
-                "for-hover",
-                item === hovering ? "hovered" : "",
-              ]}
-              // onMouseOver={() => {
-              //   setHovering(item);
-              // }}
-            />
-          );
-        })}
+        {chosenTeam.length > 0 ? (
+          <Line
+            isAnimationActive={false}
+            type="monotone"
+            dataKey={chosenTeam}
+            stroke={colors[chosenTeam]}
+            dot={{ fill: colors[chosenTeam] }}
+            strokeWidth={15}
+            key={chosenTeam}
+            className={["selected"]}
+          />
+        ) : null}
         <YAxis
           type={"number"}
           orientation={"right"}
           reversed
           tickCount={1}
-          // tickCount={teams.length}
-          // ticks={{1:"81208X", 2:"369A"}}
           domain={[1, teams.length - 1]}
         />
         <XAxis dataKey="date" />
-        {/* <Tooltip /> */}
       </LineChart>
       <div className="ticks">
         {teams.map((item, idx) => (
           <p
             key={item}
-            // onMouseOver={() => {
-            //   setHovering(item);
-            // }}
             onClick={() => {
-              setHovering(item);
+              chooseTeam(item);
             }}
+            className={[item === chosenTeam ? "selected" : ""]}
           >
-            {idx}: {item}
+            {idx} - {item}
           </p>
         ))}
       </div>
@@ -210,10 +187,10 @@ function Home() {
           {getTimeString(Date.now() - data[data.length - 1].time)}
         </p>
         <a
-          href={`https://www.robotevents.com/teams/VRC/${hovering}`}
+          href={`https://www.robotevents.com/teams/VRC/${chosenTeam}`}
           className="team"
         >
-          <h1>{hovering}</h1>
+          <h1>{chosenTeam}</h1>
         </a>
       </div>
     </div>

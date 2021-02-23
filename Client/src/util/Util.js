@@ -21,4 +21,29 @@ let randomColor = () => {
   return color;
 };
 
-export { getTimeString, randomColor };
+let randomRange = (min, max) => {
+  const r = Math.random() * (max - min) + min;
+  return Math.floor(r);
+};
+
+let randomDarkColor = () => {
+  let h = randomRange(0, 360);
+  let s = randomRange(50, 100);
+  let l = randomRange(20, 70);
+  return hslToHex(h,s,l);
+};
+
+let hslToHex = (h, s, l) => {
+  l /= 100;
+  const a = (s * Math.min(l, 1 - l)) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0"); // convert to Hex and prefix "0" if needed
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+};
+
+export { getTimeString, randomColor, hslToHex, randomRange, randomDarkColor };

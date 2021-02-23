@@ -15,34 +15,29 @@
   text-align: center;
 }
 
-.recharts-line.for-hover:hover, .recharts-line.for-hover.hovered {
-  z-index: 10;
-}
-
-.recharts-line.for-hover:hover path, .recharts-line.for-hover.hovered path {
+/* .team-rankings .selected path {
   transition: 0.2s;
-  pointer-events: all;
-}
-
-.recharts-line.for-hover:not(:hover):not(.hovered) path {
-  padding: 1em;
-  transition: 2s;
-  stroke: #ffffff00;
-}
+  stroke-width: 15;
+  z-index: 10000;
+} */
 
 .ticks {
   line-height: 30px;
   padding-top: 5px;
   margin-left: -50px;
-  z-index: 100;
+  z-index: 10000;
 }
 
 .ticks p {
   margin: 0;
-  transition: .3s;
+  transition: 0.3s;
 }
 
-.ticks p:hover{
+.ticks p:hover {
   cursor: pointer;
+  font-size: 25px;
+}
+
+.ticks p.selected {
   font-size: 25px;
 }
