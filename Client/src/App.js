@@ -7,7 +7,7 @@ import ReactGA from "react-ga";
 import Home from "./screens/Home";
 
 function initializeReactGA() {
-  ReactGA.initialize("G-7Z286BH7JF");
+  ReactGA.initialize("UA-140777720-3");
   ReactGA.pageview(window.location.pathname + window.location.search);
 }
 
@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     initializeReactGA();
   }, []);
-  
+
   return (
     <Switch>
       <Route path="/" component={Home} />
