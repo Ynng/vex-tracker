@@ -103,11 +103,13 @@ function Home() {
   if (loading) return "Loading....";
   if (error) return "Error!";
 
+  console.log("Rendering Home");
+
   return (
     <div className="main-wrapper">
       <LineChart
         width={data.length * 50}
-        height={(teams.length+0.7) * teamHeight}
+        height={(teams.length + 0.7) * teamHeight}
         data={data}
         margin={{
           top: 20,
@@ -190,6 +192,7 @@ function Home() {
       <div className="ticks">
         {teams.map((item, idx) => (
           <p
+            key={item}
             onMouseOver={() => {
               setHovering(item);
             }}

@@ -27,3 +27,8 @@ a {
 a:hover {
   color: #00a2b4;
 }
+
+
+.display-none{
+  display: none !important;
+}

@@ -1,0 +1,54 @@
+diff --git a/node_modules/recharts/es6/cartesian/Line.js b/node_modules/recharts/es6/cartesian/Line.js
+index 365584d..87f9289 100644
+--- a/node_modules/recharts/es6/cartesian/Line.js
++++ b/node_modules/recharts/es6/cartesian/Line.js
+@@ -250,11 +250,13 @@ export var Line = /*#__PURE__*/function (_PureComponent) {
+           ref = _this$props3.ref,
+           others = _objectWithoutProperties(_this$props3, ["type", "layout", "connectNulls", "ref"]);
+ 
+-      var curveProps = _objectSpread(_objectSpread(_objectSpread({}, filterProps(others, true)), {}, {
++      var curveProps = _objectSpread(_objectSpread(_objectSpread({}, filterProps(others, true)), {}, 
++      {
+         fill: 'none',
+         className: 'recharts-line-curve',
+         clipPath: needClip ? "url(#clipPath-".concat(clipPathId, ")") : null,
+-        points: points
++        points: points,
++        dataKey: _this$props3.dataKey
+       }, props), {}, {
+         type: type,
+         layout: layout,
+diff --git a/node_modules/recharts/es6/shape/Curve.js b/node_modules/recharts/es6/shape/Curve.js
+index 8e1dcaa..85b539f 100644
+--- a/node_modules/recharts/es6/shape/Curve.js
++++ b/node_modules/recharts/es6/shape/Curve.js
+@@ -80,6 +80,8 @@ var getCurveFactory = function getCurveFactory(type, layout) {
+   return CURVE_FACTORIES[name] || curveLinear;
+ };
+ 
++var cachedPath = {};
++
+ export var Curve = /*#__PURE__*/function (_PureComponent) {
+   _inherits(Curve, _PureComponent);
+ 
+@@ -99,6 +101,8 @@ export var Curve = /*#__PURE__*/function (_PureComponent) {
+      * @return {String} path
+      */
+     value: function getPath() {
++      console.log('Got Path');
++
+       var _this$props = this.props,
+           type = _this$props.type,
+           points = _this$props.points,
+@@ -159,7 +163,10 @@ export var Curve = /*#__PURE__*/function (_PureComponent) {
+         return null;
+       }
+       
+-      var realPath = points && points.length ? this.getPath() : path;
++      if(!cachedPath[_this$props2.dataKey])
++        cachedPath[_this$props2.dataKey] = points && points.length ? this.getPath() : path;
++      var realPath = cachedPath[_this$props2.dataKey];
++
+       return /*#__PURE__*/React.createElement("path", _extends({}, filterProps(this.props), adaptEventHandlers(this.props), {
+         className: classNames('recharts-curve', className),
+         d: realPath,
