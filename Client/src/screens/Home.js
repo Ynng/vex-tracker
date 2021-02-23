@@ -171,9 +171,9 @@ function Home() {
                 "for-hover",
                 item === hovering ? "hovered" : "",
               ]}
-              onMouseOver={() => {
-                setHovering(item);
-              }}
+              // onMouseOver={() => {
+              //   setHovering(item);
+              // }}
             />
           );
         })}
@@ -193,9 +193,9 @@ function Home() {
         {teams.map((item, idx) => (
           <p
             key={item}
-            onMouseOver={() => {
-              setHovering(item);
-            }}
+            // onMouseOver={() => {
+            //   setHovering(item);
+            // }}
             onClick={() => {
               setHovering(item);
             }}
