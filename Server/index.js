@@ -93,6 +93,13 @@ app.get('/ranking', (req, res) => {
 });
 
 app.get('/team-info', (req, res) => {
+  if (!req.query.team) {
+    res.status(400).json({
+      message: 'Please submit a team',
+    });
+    return;
+  }
+
   var targetDate = new Date();
   var startDate = toDate(startingDate, 'yyyy-mm-dd');
   while (targetDate >= startDate) {
@@ -104,7 +111,12 @@ app.get('/team-info', (req, res) => {
           'utf8'
         );
         let data = JSON.parse(snapshot);
-        res.json(data);
+        let teams = data.teams;
+        if(!teams[req.query.team]){
+          res.status(404).json({ message: 'Team does not exist' });
+          return;
+        }
+        res.json(teams[req.query.team]);
         return;
       } catch (err) {
         console.log(`Error reading file from disk: ${err}`);
