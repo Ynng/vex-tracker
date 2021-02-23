@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:600");
+
 *,
 :after,
 :before {
@@ -11,6 +13,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: "Roboto Mono", Arial, Helvetica, sans-serif;
 }
 
 code {
@@ -20,15 +23,19 @@ code {
 
 a {
   color: #005d68;
-  transition: .3s;
+  transition: .1s;
 }
 
 
 a:hover {
-  color: #00a2b4;
+  color: #00bbcf;
 }
 
 
 .display-none{
   display: none !important;
+}
+
+.small-text{
+  font-size: 0.75rem;
 }
