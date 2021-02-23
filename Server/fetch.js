@@ -1,5 +1,5 @@
 const fs = require('fs');
-var dateformat = require('dateformat');
+const dateformat = require('dateformat');
 const {
   rankingUrl,
   savePath,
