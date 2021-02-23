@@ -94,6 +94,7 @@ app.get('/ranking', (req, res) => {
 });
 
 app.get('/team-info', (req, res) => {
+  console.log(req.connection.remoteAddress);
   if (!req.query.team) {
     res.status(400).json({
       message: 'Please submit a team',
@@ -131,6 +132,7 @@ app.get('/team-info', (req, res) => {
 });
 
 app.get('/all', (req, res) => {
+  console.log(req.connection.remoteAddress);
   if (!req.query.season) {
     res.status(400).json({
       message: 'Please submit the season',
