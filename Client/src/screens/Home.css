@@ -5,21 +5,27 @@
   flex-direction: row;
 }
 
+.graph-wrapper{
+  max-width: 50vw;
+  overflow-x: scroll;
+}
+
 .info-panel {
   position: fixed;
   right: 1em;
-  width: 25vw;
+  width: 30vw;
   top: 50%;
   right: 10%;
   transform: translateY(-50%);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-/* .team-rankings .selected path {
-  transition: 0.2s;
-  stroke-width: 15;
-  z-index: 10000;
-} */
+.info-panel p {
+  margin: 0;
+}
 
 .ticks {
   line-height: 30px;
@@ -40,4 +46,47 @@
 
 .ticks p.selected {
   font-size: 25px;
+}
+
+.team-title a {
+  width: auto;
+}
+
+.team-title h1 {
+  margin-bottom: 0;
+  width: auto;
+}
+
+.team-title h2 {
+  margin-top: 0;
+  width: auto;
+}
+
+ul.team-info {
+  list-style: none;
+  text-align: left;
+  padding: 0 1em;
+}
+
+ul.team-info li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+ul.team-info li .title {
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+}
+
+ul.team-info li .score {
+  text-align: right;
+  max-width: 75%;
+}
+
+ul.team-info h2,
+ul.team-info h3,
+ul.team-info h4 {
+  margin: 0;
 }

@@ -1,3 +1,18 @@
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 let getTimeString = (duration) => {
   let totalSeconds = duration / 1000;
   let days = Math.floor(totalSeconds / 86400);
@@ -11,6 +26,11 @@ let getTimeString = (duration) => {
   if (hours) return `${hours} hours, ${minutes} minutes and ${seconds} seconds`;
   if (minutes) return `${minutes} minutes ${seconds} seconds`;
   return `${seconds} seconds`;
+};
+
+let getShortDateString = (time) => {
+  let date = new Date(time);
+  return `${monthNames[date.getMonth()]} ${date.getDate()}`;
 };
 
 let randomColor = () => {
@@ -30,7 +50,7 @@ let randomDarkColor = () => {
   let h = randomRange(0, 360);
   let s = randomRange(50, 100);
   let l = randomRange(20, 70);
-  return hslToHex(h,s,l);
+  return hslToHex(h, s, l);
 };
 
 let hslToHex = (h, s, l) => {
@@ -46,4 +66,23 @@ let hslToHex = (h, s, l) => {
   return `#${f(0)}${f(8)}${f(4)}`;
 };
 
-export { getTimeString, randomColor, hslToHex, randomRange, randomDarkColor };
+let toStringFixedLength = (n, len, left) => {
+  let str = n.toString();
+  let spaces = len - str.length;
+  if (spaces <= 0) spaces = 0;
+  let space = "\xa0";
+  if (left) str = space.repeat(spaces) + str;
+  else str = str + space.repeat(spaces);
+
+  return str;
+};
+
+export {
+  getShortDateString,
+  getTimeString,
+  randomColor,
+  hslToHex,
+  randomRange,
+  toStringFixedLength,
+  randomDarkColor,
+};
