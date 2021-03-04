@@ -30,7 +30,7 @@ let getTimeString = (duration) => {
 
 let getShortDateString = (time) => {
   let date = new Date(time);
-  return `${monthNames[date.getMonth()]} ${date.getDate()}`;
+  return `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}`;
 };
 
 let randomColor = () => {

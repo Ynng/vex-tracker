@@ -4,7 +4,8 @@ import { useRef, useState, useEffect, Component } from "react";
 import Canvas from "react-responsive-canvas";
 import { Route, Switch } from "react-router-dom";
 import ReactGA from "react-ga";
-import Home from "./screens/Home";
+import Old from "./screens/Old";
+import Main from "./screens/Main";
 
 function initializeReactGA() {
   ReactGA.initialize("UA-140777720-3");
@@ -18,7 +19,8 @@ function App() {
 
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/Old" component={Old} />
+      <Route path="/" component={Main} />
     </Switch>
   );
 }

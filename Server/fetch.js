@@ -51,7 +51,7 @@ async function fetchInfo() {
 
   /* Generate all data file */
   var targetDate = toDate(startingDate, 'yyyy-mm-dd');
-  var all = { teams: {}, time: [] };
+  var all = { scores: {}, time: [] };
   var i = 0;
   while (targetDate <= functionStartTime) {
     var targetDateString = dateformat(targetDate, 'yyyy-mm-dd');
@@ -66,14 +66,14 @@ async function fetchInfo() {
         all.time[i] = data.time;
 
         for (const team in data.teams) {
-          if (!all.teams[team]) all.teams[team] = [];
+          if (!all.scores[team]) all.scores[team] = [];
           teamScore = data.teams[team].scores.score;
           if (data.teams[team].scores.programming == maxScore)
             teamScore += data.teams[team].scores.progStopTime;
           if (data.teams[team].scores.driver == maxScore)
             teamScore += data.teams[team].scores.driverStopTime;
 
-          all.teams[team][i] = teamScore;
+          all.scores[team][i] = teamScore;
         }
       } catch (err) {
         console.error(err);

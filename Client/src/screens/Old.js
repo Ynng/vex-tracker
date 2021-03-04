@@ -1,4 +1,4 @@
-import "./Home.css";
+import "./Old.css";
 import { LineChart, Line, YAxis, XAxis } from "recharts";
 import { useEffect, useState } from "react";
 import {
@@ -12,7 +12,7 @@ const teamHeight = 30;
 
 var teamDataCache = {};
 
-function Home() {
+function Old() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [scrollTop, setScrollTop] = useState(0);
@@ -327,4 +327,4 @@ function Home() {
     </div>
   );
 }
-export default Home;
+export default Old;
