@@ -4,6 +4,7 @@
   "rankingPath":"./ranking/",
   "dataPath":"./all/",
   "startingDate":"2021-02-13",
+  "maxScore":126,
   "currentSeason":"change-up",
   "debug":false
 }

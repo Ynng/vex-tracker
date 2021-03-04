@@ -7,6 +7,7 @@ const {
   dataPath,
   startingDate,
   currentSeason,
+  maxScore,
 } = require('./config.json');
 const fetch = require('node-fetch');
 const { toDate } = require('./util');
@@ -66,7 +67,13 @@ async function fetchInfo() {
 
         for (const team in data.teams) {
           if (!all.teams[team]) all.teams[team] = [];
-          all.teams[team][i] = data.teams[team].rank;
+          teamScore = data.teams[team].scores.score;
+          if (data.teams[team].scores.programming == maxScore)
+            teamScore += data.teams[team].scores.progStopTime;
+          if (data.teams[team].scores.driver == maxScore)
+            teamScore += data.teams[team].scores.driverStopTime;
+
+          all.teams[team][i] = teamScore;
         }
       } catch (err) {
         console.error(err);
